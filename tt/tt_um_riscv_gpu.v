@@ -22,7 +22,7 @@
 //   SEL 10 = control / status
 //            write: bit 0 = start      (1 data byte)
 //            read:  {6'b0, done, busy}  (1 byte out)
-//   SEL 11 = read matrix C element    (4 bytes out, MSB first)
+//   SEL 11 = read matrix C element    (3 bytes out, MSB first)
 
 module tt_um_riscv_gpu (
     input  wire [7:0] ui_in,
@@ -53,7 +53,7 @@ module tt_um_riscv_gpu (
     wire [7:0]  cmd_byte;
     wire        wr_valid;
     wire [7:0]  wr_byte;
-    reg  [31:0] rd_data;
+    reg  [23:0] rd_data;
 
     // --- Command decode ---
     wire       cmd_is_read = cmd_byte[7];
@@ -70,7 +70,7 @@ module tt_um_riscv_gpu (
     reg         core_start;
     wire        core_busy;
     wire        core_done;
-    wire [31:0] core_c_data;
+    wire [23:0] core_c_data;
 
     // --- Sticky done flag ---
     reg done_sticky;
@@ -87,9 +87,9 @@ module tt_um_riscv_gpu (
     // --- Read data mux (combinational, feeds SPI shift-out) ---
     always @(*) begin
         case (cmd_sel)
-            2'b10:   rd_data = {24'b0, 6'b0, done_sticky, core_busy};
+            2'b10:   rd_data = {16'b0, 6'b0, done_sticky, core_busy};
             2'b11:   rd_data = core_c_data;
-            default: rd_data = 32'b0;
+            default: rd_data = 24'b0;
         endcase
     end
 
@@ -151,7 +151,7 @@ module tt_um_riscv_gpu (
     tpu_core_wrapper #(
         .N  (4),
         .DW (8),
-        .CW (32)
+        .CW (24)
     ) u_core (
         .clk       (clk),
         .rst       (rst),

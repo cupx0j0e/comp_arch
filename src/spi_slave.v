@@ -28,7 +28,7 @@ module spi_slave (
     output reg  [7:0]  cmd_byte,    // latched command byte
     output reg         wr_valid,    // pulse: write data byte received
     output reg  [7:0]  wr_byte,     // latched write data
-    input  wire [31:0] rd_data      // read response (active when cmd_byte is a read)
+    input  wire [23:0] rd_data      // read response (active when cmd_byte is a read)
 );
 
     // --- Synchronizers (2-FF for metastability) ---
@@ -55,7 +55,7 @@ module spi_slave (
     // --- Shift registers and control ---
     reg [5:0]  bit_cnt;
     reg [7:0]  shift_in;
-    reg [31:0] shift_out;
+    reg [23:0] shift_out;
     reg        cmd_phase;       // 1 while receiving command byte
     reg        rd_loaded;       // 1 after read data has been loaded
 
@@ -63,7 +63,7 @@ module spi_slave (
         if (rst) begin
             bit_cnt   <= 6'd0;
             shift_in  <= 8'd0;
-            shift_out <= 32'd0;
+            shift_out <= 24'd0;
             cmd_byte  <= 8'd0;
             cmd_valid <= 1'b0;
             wr_byte   <= 8'd0;
@@ -107,8 +107,8 @@ module spi_slave (
 
                 // --- SCLK falling edge: drive MISO ---
                 if (sclk_fall && rd_loaded) begin
-                    spi_miso  <= shift_out[31];
-                    shift_out <= {shift_out[30:0], 1'b0};
+                    spi_miso  <= shift_out[23];
+                    shift_out <= {shift_out[22:0], 1'b0};
                 end
             end
         end
