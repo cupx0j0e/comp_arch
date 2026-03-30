@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 
-// TinyTapeout top wrapper for 4x4 uint8 systolic-array accelerator with SPI.
+// TinyTapeout top wrapper for 4x4 uint8 single-MAC accelerator with SPI.
 //
 // Pin map:
 //   ui_in[0]  = SPI SCLK
@@ -147,8 +147,8 @@ module tt_um_riscv_gpu (
         .rd_data   (rd_data)
     );
 
-    // --- TPU core (single 4x4 unsigned) ---
-    tpu_core_wrapper #(
+    // --- MAC core (single 4x4 unsigned, 64-cycle matmul) ---
+    mac_core #(
         .N  (4),
         .DW (8),
         .CW (20)

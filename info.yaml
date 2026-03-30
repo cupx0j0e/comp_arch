@@ -8,7 +8,7 @@ project:
   clock_hz:     50000000
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "6x2"
+  tiles: "1x2"
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
   top_module:  "tt_um_riscv_gpu"
@@ -18,9 +18,7 @@ project:
   source_files:
     - "tt_um_riscv_gpu.v"
     - "spi_slave.v"
-    - "tpu_core_wrapper.v"
-    - "systolic_array.v"
-    - "pe.v"
+    - "mac_core.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
